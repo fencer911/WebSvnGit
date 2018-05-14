@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="X-UA-COMPATIBLE" content="IE=Edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <title>{p_type}'s logs</title>
+    <link rel="stylesheet" href="/static/css/websvn.css">
+	<style type="text/css">
+	.hidenDetail {display:none}
+	</style>
+</head>
+
+<body>
+<div class="websvn">
+    <!-- search form -->
+    <form action="" class="websvn-searchform" id="mainForm" method="POST">
+
+        <div class="input-group search">
+            <input class="search-input" type="search" name="search" value="not implement" >
+            <div class="addon-search js-show" data-target=".js-search-option"><span class="icon-caret"></span></div>
+            <ul class="win-menu js-search-option">
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Messages</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Paths</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Authors</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Revisions</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Bug-IDs</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Date</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Date Range</span>
+                </li>
+                <li class="group-start">
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Use regular expression</span>
+                </li>
+                <li>
+                    <span class="left"><input type="checkbox"></span>
+                    <span class="right">Case-sensitive</span>
+                </li>
+            </ul>
+        </div>
+        <span class="form-label">PWD</span><input type="password" id="password" value="" >
+        <div class="form-group from">
+            <span class="form-label">Form</span>
+            <input class="Wdate" type="text" value="2017/11/22" onclick="WdatePicker()">
+        </div>
+    </form>
+
+    <!-- search result -->
+    <div class="websvn-search-result">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td >Rev</td>
+
+                    <td >Act</td>
+                    <td >Author</td>
+                    <td >Date</td>
+                    <td >Message</td>
+                    <td>files</td>
+					<td class="hidenDetail">
+					</td>
+                </tr>
+            </thead>
+{% if result%}
+            <tbody id="rows">
+                {% for log in result %}
+                <tr>
+                    <td>{{log.revision}}</td>
+                    <td>{% for ac in log.acts %}{{ac}}{% endfor %}</td>
+                    <td>{{log.author}} <span color="blue">:{{log.affectedFiles}}</span></td>
+                    <td>{{log.date}}</td>
+                    <td title="{{log.msg}}" sytle="font: 10px/1 microsoft yahei;">{{log.msg}}</td>
+                    <td>{{log.files}}</td>
+					<td class="hidenDetail">
+						{% for p in log.paths %}
+						<span>{{p.action}},{{p.path}}</span>
+						{% endfor %}
+					</td>
+                </tr>
+				{% endfor %}
+            </tbody>
+{% endif %}
+        </table>
+    </div>
+
+    <!-- Modify Details -->
+    <div class="websvn-item-details">
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Action</td>
+					<td >Patched</td>
+                    <td>Path </td>
+                </tr>
+            </thead>
+            <tbody id="path_detail">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- websvn desc -->
+    <div class="websvn-desc">
+        Showing {{n}} revison(s)
+    </div>
+
+    <!-- websvn btns -->
+    <div class="websvn-btns">
+		<button class="btn js-show" data-target=".js-revision-range" id="patch_btn">&nbsp;&nbsp;Patch(Selected Files)</button>
+		<button class="btn" id="patch_all">Select All Files to Patch</button>
+		<button class="btn" id="autodeploy" title="Please input password to check your authority ">mvn clean package</button>
+
+        <button class="btn" id="tail">logs</button>
+		<button class="btn" id="svn_update" >{{ p_type }} update</button>
+        <button class="btn" id="execshell" title="{{ execshell }}">exec shell cmd defined in project_cmd_dict  </button>
+        <a href="###">Author backend(https://gitee.com/fencer911) ,fontend(https://gitee.com/wuzhike403/) </a>
+    </div>
+
+    <div class="popwin revision-range js-revision-range noauto">
+        <div>
+            <div class="popwin-header">
+                <button class="btn-close fr js-close" data-target=".js-revision-range">&#x2573;</button>
+                <div class="popwin-title txt-websvn">select files to patch</div>
+            </div>
+            <form id="patchForm" action="/{{project}}/patch/" class="popwin-body"   method="POST" target="_blank">
+				<input  value="patch" type="hidden" name="action" id="action"/>
+				<div id="paths">
+				</div>
+                <div class="form-footer">
+                    <button class="btn" id="patch">Patch</button>
+					<button class="btn" id="deploy">Deploay</button>
+					<a href="##" onclick="quxiaoAll()">Cancel All Selected</button>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="/static/js/jquery-1.8.3.min.js"></script>
+
+<script>
+(function(){
+    // click
+    var activeElem = null,
+        detailElem = document.querySelector(".websvn-search-result");
+
+    document.body.addEventListener("click", function(e){
+        var eTar = e.target, pt = null;
+
+        hideActive();
+        if( pt = lookParent(eTar, "js-show"), pt){
+            // js-show
+            var cssSelector = pt.getAttribute("data-target"),
+                tar = document.querySelector(cssSelector);
+
+            if(cssSelector && tar){
+                tar.style.display = "block";
+                if(!tar.classList.contains("noauto")){ activeElem = tar; }
+            }
+        }else if(pt = lookParent(eTar, "win-menu"), pt){
+            // win-menu
+            var li = lookParent(eTar, "li");
+            var ck = li.querySelector("input");
+            if(ck){
+                if(ck.checked){
+                    ck.checked = false;
+                }else{
+                    ck.checked = true;
+                }
+            }
+        }else if(eTar.classList.contains("js-close")) {
+            // js-close
+            var tar = document.querySelector(eTar.getAttribute("data-target"));
+            if(tar){ tar.style.display = "none"; }
+        }else if( (pt = lookParent(eTar, "tr"), pt) && detailElem.contains(eTar)){
+            // tr: active
+            var oldTr = pt.parentNode.querySelector("tr.active");
+            if(oldTr){
+                oldTr.classList.remove("active");
+            }
+
+            pt.classList.add("active");
+        }
+    });
+
+    function hideActive(){
+        if(activeElem){
+            activeElem.style.display = "none";
+        }
+    }
+
+    function lookParent(elem, css){
+        var pt = elem;
+        while(pt != document.body){
+            if(selectRule(pt, css)){ return pt; }
+            pt = pt.parentNode;
+        }
+    }
+
+    function selectRule(elem, css){
+        if((elem.tagName.toLowerCase() == css.toLowerCase())
+            || (elem.id == css)
+            || elem.classList.contains(css)){
+            return true;
+        }
+        return false;
+    }
+})();
+
+
+function searchForm(){
+		console.log("checkbox click");
+		$("#mainForm").submit();
+}
+(function() {
+})();
+var my_patchs=new Array();
+$(function(){
+
+	$(".js-search-option li  input").click(function(){
+		console.log("checkbox click");
+		$("#mainForm").submit();
+	});
+	$(".websvn-search-result table tr").live('click',function(){
+		//console.log("hidenDetail1="+$(this).find(".hidenDetail").html());
+		$("#path_detail tr").remove();
+		$(this).find(".hidenDetail").find("span").each(function(k){
+			var path=$(this).html();
+			var ac=path.split(",")[0];
+			var svnPath=path.split(",")[1];
+			if(!my_patchs[svnPath]){
+			    tag='un selected';
+			}else{
+				tag='selected';
+			}
+			$("#path_detail").append("<tr><td>"+ac+"</td><td><span data_ac='"+ac+"' data_path='"+svnPath+"'>"+tag+"</span></td><td>"+svnPath+"</td></tr>");
+		});
+	});//
+	$("#path_detail tr span").live('click',function(){
+											var path=$(this).attr("data_path");
+											var ac=$(this).attr("data_ac");
+											console.log("add path:"+path+" ac:"+ac+"my_patchs[path]:"+my_patchs[path]);
+
+											if(ac.toUpperCase()!='D'){
+												if(!my_patchs[path]){
+													console.log('!my_patchs[path]='+(!my_patchs[path]));
+													my_patchs[path]=1;
+													$(this).html('selected');
+												}
+											}else{
+												$(this).html("can't  selecte");
+											}
+
+		});
+	//render
+	$("#patch_btn").click(function(){
+					$("#paths").html('');
+					var count=0;
+					for(var d in my_patchs){
+						console.log("render"+d);
+						count=count+1;
+						var row="<div class='form-group'> <input name='svnPaths' type='checkbox' checked value='"+d+"'/><span>"+count+""+d+"</span></div>";
+						$("#paths").append(row);
+
+					}
+					$(".popwin-title").html("selected patch files("+count+")");
+	});
+
+	$("#patch_all").click(function(){
+		$("#action").val("patch");
+		//my_patchs=[];
+		$(".websvn-search-result .hidenDetail span").each(function(k){
+					var path=$(this).html();;
+					var ac=path.split(",")[0];
+					var svnPath=path.split(",")[1];
+					//console.log(svnPath);
+					if(ac.toUpperCase()!='D'){
+						//my_patchs.push(svnPath);
+						if(!my_patchs[svnPath]){
+							console.log("add my_patchs:"+svnPath);
+							my_patchs[svnPath]=1;
+						}
+					}
+		});
+		alert("please move to Patch File Window");
+	});
+
+	$("#patch").click(function(){
+
+        var checkPath=[];
+        $("input[name='svnPaths']").each(function(i){
+            if($(this).attr("checked")){
+                checkPath.push($(this).val());
+            }
+        });
+        $("#action").val(checkPath.join(","));
+
+        var patchForm=document.getElementById("patchForm");
+        patchForm.action="/{{project }}/patch/";
+        patchForm.method="POST";
+        //$("input[name=svnPath]")
+		//my_patchs=[];
+	});
+	$("#deploy").click(function(){
+        var checkPath=[];
+        $("input[name='svnPaths']").each(function(i){
+            if($(this).attr("checked")){
+                checkPath.push($(this).val());
+            }
+        });
+        $("#action").val(checkPath.join(","));
+
+        var patchForm=document.getElementById("patchForm");
+        patchForm.action="/{{project }}/deploy/";
+        patchForm.method="POST";
+	});
+
+	$("#svn_update").click(function(){
+		$("#cmd").val("code_update");
+		$("#subForm").submit();
+	});
+
+	$("#tail").click(function(){
+		$("#cmd").val("tail");
+		$("#subForm").submit();
+	});
+
+	$("#autodeploy").click(function(){
+			$("#cmd").val("test_env_deploy");
+			$("#pwd").val($("#password").val());
+			$("#subForm").submit();
+	});
+	$("#execshell").click(function(){
+		$("#cmd").val("execshell");
+		$("#subForm").submit();
+	});
+
+
+});
+function quxiaoAll(){
+	$("input[name='svnPaths']").each(function(i){$(this).attr("checked",false)});
+}
+</script>
+<form action="/{{project}}/cmd/" id="subForm"  target="_blank" method="GET">
+<input  value="" type="hidden" name="cmd" id="cmd"/>
+<input  value="" type="hidden" name="pwd" id="pwd"/>
+</form>
+</body>
+</html>

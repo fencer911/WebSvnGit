@@ -1,0 +1,344 @@
+/* websvn @wuji @18-01-12 */
+
+html { height: 100%; }
+body {
+    height: 100%;
+    margin: 0;
+    font: 14px/1.43 "microsoft yahei";
+    color: #333;
+}
+.websvn {
+    position: relative;
+    width: 1200px;
+    height: 100%;
+    margin: auto;
+}
+/*common component*/
+.websvn input[type="text"],
+.websvn input[type="search"] {
+    padding: 6px 10px;
+}
+.websvn input[type="search"] {
+    text-align: center;
+}
+.websvn .fl { float: left; }
+.websvn .fr { float: right; }
+.websvn .hider { display: none; }
+.websvn .btn-wrap {
+    position: relative;
+    display: inline-block;
+}
+.websvn .arrow-r,
+.websvn .icon-caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border: 4px solid transparent;
+}
+.websvn .icon-caret {
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-color: #333;
+}
+.websvn .arrow-r {
+    border-left-color: #333;
+}
+.websvn .shortcut {
+    text-decoration: underline;
+}
+.websvn .btn-wrap {
+    position: relative;
+}
+.websvn .btn-wrap.has-addon .btn{
+    padding-right: 26px;
+}
+.websvn .btn-wrap .btn-addon {
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 20px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-left: 1px solid #fff;
+    cursor: pointer;
+}
+.websvn .btn-wrap .arrow-r {
+    border-right-width: 0;
+}
+.websvn .btn.fr {
+    margin-left: 5px;
+}
+
+
+/* win-menu*/
+.win-menu {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 10;
+    display: none;
+    min-width: 100px;
+    margin: 0;
+    padding: 2px;
+    border: 1px solid #aaa;
+    background: #eee;
+    box-shadow: 2px 2px 5px #aaa;
+    list-style: none;
+}
+.win-menu>li {
+    border: 1px solid transparent;
+}
+.win-menu>li:hover {
+    background: #e9eff6;
+    border-color: #b7d3f6;
+}
+.win-menu .left {
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 28px;
+    height: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: top;
+    border-right: 1px solid #fff;
+}
+.win-menu .left:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: #d5d5d5;
+}
+.win-menu .right {
+    position: relative;
+    display: block;
+    margin-left: 32px;
+    padding-left: 5px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.win-menu .group-start .right {
+    border-top: 1px solid #fff;
+}
+.win-menu .group-start .right:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 100%;
+    height: 1px;
+    background: #d5d5d5;
+}
+
+
+/* search form */
+.websvn-searchform {
+    height: 32px;
+}
+.websvn-searchform .form-label {
+    display: inline-block;
+    padding: 6px 10px;
+    vertical-align: middle;
+}
+.websvn-searchform .to,
+.websvn-searchform .from {
+    float: right;
+}
+.websvn-searchform .to input,
+.websvn-searchform .from input {
+    width: 150px;
+}
+.websvn-searchform .input-group {
+    position: relative;
+    display: inline-block;
+    width: calc(100% - 470px);
+    vertical-align: top;
+}
+.websvn-searchform .search-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 30px !important;
+}
+.websvn-searchform .addon-search {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 100%;
+    border-right: 1px solid #ddd;
+    background: url(../images/icon-search.png) no-repeat center center;
+    cursor: pointer;
+}
+.websvn-searchform .addon-search .icon-caret {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+/* search result */
+.websvn-item-details:before,
+.websvn-search-result:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1px;
+    z-index: -1;
+    width: 100%;
+    height: 32px;
+}
+.websvn-item-details:before,
+.websvn-search-result:before,
+.websvn thead {
+    background-image: -webkit-gradient(top, 0 0, 0 100, from(#fff), to(#f5f5f5));
+    background-image: -webkit-linear-gradient(#fff, #f5f5f5);
+    background-image: -moz-linear-gradient(#fff, #f5f5f5);
+    background-image: -o-linear-gradient(#fff, #f5f5f5);
+    background-image: linear-gradient(#fff, #f5f5f5);
+}
+.websvn-item-details,
+.websvn-search-result {
+    position: relative;
+    margin-top: 10px;
+    border: 1px solid #aaa;
+    overflow-y: auto;
+}
+.websvn .table {
+    border-collapse: collapse;
+}
+.websvn td {
+    position: relative;
+    padding: 6px 10px;
+    border-right: 1px solid #ddd;
+    white-space: nowrap;
+}
+.websvn tbody tr {
+    cursor: pointer;
+}
+.websvn tr.active {
+    background: #ddd !important;
+}
+.websvn tbody tr:nth-child(2n) {
+    background: #fbfbfb;
+}
+.websvn thead td {
+    box-shadow: inset 0 0 5px #fff;
+}
+/*
+.websvn thead td:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    min-height: 400px;
+    background: #ddd;
+}
+*/
+
+.websvn-search-result {
+    height: calc((100% - 130px) * 0.65);
+}
+
+/* websvn-item-details */
+.websvn-item-details {
+    height: calc((100% - 130px) * 0.35);
+}
+.websvn-item-details td:nth-child(2).active,
+.websvn-item-details td:nth-child(2):hover {
+    color: #fff;
+    background: #333;
+}
+
+.websvn-desc {
+    margin: 5px auto;
+}
+
+/* websvn options */
+.websvn-options .form-group {
+    margin-top: 5px;
+}
+
+/* websvn btns */
+.websvn-btns {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+}
+.websvn-btns .btn-wrap,
+.websvn-btns .btn {
+    margin-right: 20px;
+}
+.websvn-btns .btn-wrap .btn {
+    margin: 0;
+}
+.websvn-btns .btn.fr {
+    margin-right: 0;
+    margin-left: 10px;
+}
+.websvn-btns .win-menu {
+    left: 110%;
+    top: -50px;
+}
+
+
+/* popwin */
+.popwin {
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: none;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: rgba(0,0,0,.3);
+}
+.popwin:before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 100%;
+    vertical-align: middle;
+}
+.popwin>div {
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    height: 70%;
+    box-sizing: border-box;
+    vertical-align: middle;
+    text-align: left;
+    border-radius: 4px;
+    background: #fff;
+}
+.popwin-header {
+    margin: 10px 20px;
+}
+.popwin-body {
+    clear: both;
+    height: calc(100% - 40px);
+    margin: 0 20px;
+}
+#paths {
+    height: calc(100% - 40px);
+    overflow-y: auto;
+}
+#paths span {
+    display: inline-block;
+    width: calc(100% - 25px);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: top;
+}
+.popwin .form-group {
+    line-height: 32px;
+}
+.form-footer {
+    margin-top: 10px;
+    text-align: center;
+}

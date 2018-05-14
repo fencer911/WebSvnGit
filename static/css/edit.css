@@ -1,0 +1,34 @@
+	 .source, .target {
+		cursor: pointer;
+	}
+
+	.m_readnoly .target, .source {
+		text-decoration: none!important;
+	} 
+	.edit_focus {
+		border-radius: 4px;
+		box-shadow: 1px 1px 3px 1px #9cabd4, -1px -1px 3px 1px #9cabd4;
+		padding: 2px;
+	}	
+    	.tooltip {
+    		position: fixed;
+    		z-index: 10000;
+    		display: none;
+    		padding: 5px 10px;
+    		border-radius: 4px;
+    		border: 1px solid #ddd;
+    		background: #fbfbfb;
+    		box-shadow: 2px 3px 5px #f0f0f0;
+    	}
+    	.tooltip-close {
+    		float: right;
+    		margin-left: 10px;
+    		padding: 0 5px;
+    		font-size: 18px;
+    		font-weight: bold;
+    		cursor: pointer;
+    		color: #555;
+    	}
+    	.tooltip-close:hover {
+    		color: red;
+    	}	

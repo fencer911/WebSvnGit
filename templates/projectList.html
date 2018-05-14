@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+       .table{
+        border-style: solid;
+        border-width: 1px;
+        border-color: #ccc;
+        border-radius: 15px;
+           width: 80%;
+	    margin:auto;
+        }
+    </style>
+</head>
+<body>
+       <table class="table">
+            <thead>
+                <tr>
+                    <td >project</td>
+                    <td >path</td>
+                    <td >type</td>
+                    <td >to logs</td>
+                </tr>
+            </thead>
+{% if items%}
+            <tbody id="rows">
+                {% for item in items %}
+                <tr>
+                    <td>{{item[0]}}</td>
+                    <td>{{item[1]}}</td>
+                    <td>{{types[item[0]]}}</td>
+                    <td><a href="/{{item[0]}}/logs?n=100">{{item[0]}} 's logs</a></td>
+                </tr>
+				{% endfor %}
+            </tbody>
+{% endif %}
+        </table>
+</body>
+</html>
