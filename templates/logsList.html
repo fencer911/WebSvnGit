@@ -126,12 +126,12 @@
     <!-- websvn btns -->
     <div class="websvn-btns">
 		<button class="btn js-show" data-target=".js-revision-range" id="patch_btn">&nbsp;&nbsp;Patch(Selected Files)</button>
-		<button class="btn" id="patch_all">Select All Files to Patch</button>
+		<button class="btn" id="patch_all">All to Patch</button>
 		<button class="btn" id="autodeploy" title="Please input password to check your authority ">mvn clean package</button>
 
         <button class="btn" id="tail">logs</button>
 		<button class="btn" id="svn_update" >{{ p_type }} update</button>
-        <button class="btn" id="execshell" title="{{ execshell }}">exec shell cmd defined in project_cmd_dict  </button>
+        <button class="btn" id="execshell" title="{{ execshell }}">{{ execshell }}</button>
         <a href="###">Author backend(https://gitee.com/fencer911) ,fontend(https://gitee.com/wuzhike403/) </a>
     </div>
 
