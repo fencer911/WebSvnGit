@@ -58,7 +58,7 @@ def cmd(project):
     if action=='test_env_deploy':
         cmd = 'mvn -X clean package -Dmaven.test.skip=true'
     if action == 'tail':
-        cmd='tail -n '+str(n)+ProjectsCofig.project_log_dict.get(project)
+        cmd='tail -n '+str(n)+' '+ProjectsCofig.project_log_dict.get(project)
     if action == 'execshell':
         cmd=ProjectsCofig.project_cmd_dict.get(project)
 
@@ -95,9 +95,11 @@ def deploy(project):
     dir_deploy=ProjectsCofig.project_deploy_dict.get(project,dir)
 
     cmd = "unzip -o " +patchFile + " -d " + dir_deploy
+    print("cmd:\n", cmd)
+    result_success=xml2Obj.getPipe(cmd,dir)
     # result_success = subprocess.check_output(cmd, cwd=dir,shell=True)
-    return cmd
+    return "<h2>" + cmd + ":<h2><br/><p></p><br/><pre>" + result_success.decode('utf-8', 'ignore') + "</pre>"
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='0.0.0.0',port=80)
+    app.run(host='0.0.0.0',port=6161)
