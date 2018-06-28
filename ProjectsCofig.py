@@ -16,25 +16,29 @@ import subprocess
 #temp dir for store source code where svn or git download code store
 #源代码目录配置 source code directory
 project_dict={
-    'learngit': 'C:/Users/fencer/Desktop/doc_dir/learngit/',
-    'pap':'F:/PAP/CodeMakerMyBatis/PAPWEA0613/'
+    'filesplit': '/data/application/papsrc/filesplit/',
+    'pap':'/data/application/papsrc/PAP/',
+	'trtag':'/data/application/papsrc/SYS2Tag/'
 }
 #部署目录配置 deploay directory
 project_deploy_dict={
-    'learngit': 'C:/Users/fencer/Desktop/doc_dir/learngit/',
-    'pap':'F:/PAP/CodeMakerMyBatis/PAPWEA0613/'
+    'filesplit': '/data/application/tomcat_urc/webapps/urc/',
+    'pap':'/data/application/tomcat_wea/webapps/ROOT/'
 }
 #项目日志文件路径配置 log file path
 project_log_dict={
-    'pap':'/data/app/tomcat_wea/logs/catalina.out'
+    'pap':'/data/application/tomcat_wea/logs/catalina.out'
 }
 #项目源代码版本控制系统类型 svn or git
 project_type_dict={
-    'learngit': 'git',
-    'pap':'svn'
+    'filesplit': 'git',
+    'pap':'git',
+	'trtag':'svn'
 }
 #常用命令或shell文件路径  common cmd or shell file path
 project_cmd_dict={
-    'pap': '/data/app/papsrc/pap_test.sh'
+    'pap': '/data/application/papsrc/pap_test.sh',
+	'filesplit': 'rm -rf /data/application/tomcat_urc/webapps/urc.war\n cp /data/application/papsrc/filesplit/target/urc.war /data/application/tomcat_urc/webapps/urc.war',
+	'trtag': 'rm -rf /data/application/tomcat_tag/webapps/trtag.war\n cp /data/application/papsrc/SYS2Tag/target/trtag.war /data/application/tomcat_tag/webapps/trtag.war'
 }
 

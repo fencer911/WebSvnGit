@@ -35,7 +35,7 @@ def logs(project):
 
     # print("text_xml\n",logs_xml)
     fHandler=StringIO(logs_xml)
-    logs=xml2Obj.parseXml(fHandler)
+    logs=xml2Obj.parseXml(fHandler,p_type)
     execshell=ProjectsCofig.project_cmd_dict.get(project,'not defined')
     return render_template('logsList.html', result=logs, project=project,n=n,p_type=p_type,execshell=execshell)
 

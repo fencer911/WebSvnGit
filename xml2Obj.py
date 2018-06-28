@@ -4,6 +4,17 @@ from io import StringIO
 import subprocess
 from subprocess import Popen, PIPE, STDOUT
 import os
+import datetime
+
+UTC_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+def convert_date(utc,p_type):
+	if p_type=='git':
+		return utc
+	else:	
+		utcTime = datetime.datetime.strptime(utc, UTC_FORMAT)
+		localtime = utcTime + datetime.timedelta(hours=8)
+		return localtime
+	
 class Logentry(object):
     def __init__(self, revision,author='',date=None,paths=None,acts=None,msg='',files=None):
         self.revision = revision
@@ -25,7 +36,7 @@ class LogPath(object):
         self.action = action
         self.path=path;
 
-def parseXml(xmlfile):
+def parseXml(xmlfile,p_type):
     tree = ET.parse(source=xmlfile)#ET.ElementTree(file=xmlfile) #ET.ElementTree.fromstring(xmltext)
     root = tree.getroot()
     logs = []
@@ -49,7 +60,7 @@ def parseXml(xmlfile):
                         if childOflogEntry.tag=='author':
                             logEntry.author=childOflogEntry.text;
                         if childOflogEntry.tag == 'date':
-                            logEntry.date = childOflogEntry.text;
+                            logEntry.date = convert_date(childOflogEntry.text,p_type);
                         if childOflogEntry.tag == 'msg':
                             logEntry.msg = childOflogEntry.text;
 
@@ -67,7 +78,7 @@ def svnLogs(dir,n):
 
 tpl = "<path {0}>{1}</path>"
 def gitLogs(dir,n):
-    cmd ='git log -'+n+' --name-status --pretty=format:"logentry_start>%n<revision>%H</revision>%n<author>%an</author>%n<date>%ad</date>%n<msg><![CDATA[ %s]]></msg>logentry_end:"'
+    cmd ='git log -'+n+' --name-status --pretty=format:"logentry_start>%n<revision>%H</revision>%n<author>%ce</author>%n<date>%ad</date>%n<msg><![CDATA[ %s]]></msg>logentry_end:"'
     print("gitLogs cmd ", cmd, ' dir=', dir)
     result_success = subprocess.check_output(cmd,cwd=dir,shell=True)
     # print(result_success)
